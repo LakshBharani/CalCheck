@@ -1,0 +1,173 @@
+from tkinter import *
+from tkinter import messagebox
+import mysql.connector
+from screens.home import createHomePage
+
+# mysql database connector
+mydb = mysql.connector.connect(
+  host="localhost",
+  user="laksh",
+  password="root",
+  database = "DietTracker",
+)
+cursor = mydb.cursor()
+# verify login fields
+def verifyLogin():
+    global uname, password
+    uname = name.get()
+    password = pwd.get()
+    if (uname == '' or password == ''):
+        messagebox.showerror('Error', 'Fields cannot be left empty')
+    elif (uname != '' and password != ''):
+        cursor.execute("select * from userdata where username = '" + uname + "' and password = '" + password + "'")
+        result = cursor.fetchall()
+        if result == []:
+            messagebox.showerror('Error', 'Invalid credentials')
+        else:
+            root.destroy()
+            print('SUCCESS: Log in')
+            createHomePage(uname.title())
+
+    else:
+        messagebox.showerror('Error','Incorrect Credentials')
+
+# verify registration fields
+def verifyReg():
+    global uname, password, phone
+    uname = name.get()
+    password = pwd.get()
+    phone = pnum.get()
+    if (uname == '' or password == '' or phone == ''):
+        messagebox.showerror('Error', 'Fields cannot be left empty')
+    elif (len(password) < 4):
+        messagebox.showerror('Error', 'Password must contain\n4 or more characters')
+    elif (len(phone) != 10):
+        messagebox.showerror('Error', 'Phone no. must contain\n10 characters')
+    elif (uname != '' and password != '' and len(phone) == 10):
+        register()
+        root.destroy()
+        print('SUCCESS: Registered')
+        createHomePage()
+    else:
+        messagebox.showerror('Error','Incorrect Username and Password')  
+
+# enter the values in the database
+def register():
+    # check if database and table exist
+    try:
+        cursor.execute('create database DietTracker')
+        print('SUCCESS: Database Created')
+    except:
+        print('SUCCESS: Database exists')
+    
+    cursor.execute('use DietTracker')
+    try:
+        cursor.execute('create table userdata(username varchar(255) primary key not null, password varchar(255) not null, phoneNo varchar(255) not null)')
+        print('SUCCESS: Table Created')
+    except:
+        print('SUCCESS: Table exists')
+    try:
+        query = f"insert into userdata values('{uname}','{password}','{phone}');"
+        print(query)
+        cursor.execute(query)
+        mydb.commit()
+    except:
+        print('ERROR: Username exists')
+        messagebox.showerror('Error', 'Username exists')
+
+# login window
+def loginScreen():
+    global root
+    root = Tk()
+    root.resizable(False,False)
+    root.eval('tk::PlaceWindow . center')
+    root.title("Login")
+    root.geometry("300x250")
+    ...
+    Label(root,width="300", text="Please enter details below", bg="orange",fg="white").pack()
+    # labels for username and PWD
+    Label(root,text='Username').place(x=20,y=40)
+    Label(root,text='Password').place(x=20,y=80)
+    ...
+    def toggle_password():
+        if pwd.cget('show') == '':
+            pwd.config(show='*')
+            toggle_btn.config(image=closedEye)
+        else:
+            pwd.config(show='')
+            toggle_btn.config(image=openEye)
+
+    closedEye = PhotoImage(file = r"assets/closedEYE.png")
+    openEye = PhotoImage(file = r"assets/openEYE.png")
+    toggle_btn = Button(root, borderwidth=1, height=15,width=15,image=closedEye,command=toggle_password)
+    toggle_btn.place(x=220,y=82)
+    ...
+    # input fields
+    global name
+    name = Entry(root)
+    name.place(x=90,y=42)
+    name.focus()
+    #customised input field for PWD
+    global pwd
+    pwd = Entry(root)
+    pwd.config(show='*')
+    pwd.place(x=90,y=82)
+    ...
+    def goToReg():
+        root.destroy()
+        regScreen()
+    Button(root, text="Submit", width=10, height=1, bg="orange",command=verifyLogin).place(x=105,y=130)
+    Button(root, text="Register", width=10, height=1, bg="orange",command=goToReg).place(x=105,y=170)
+    ...
+    root.mainloop()
+
+# registration window
+def regScreen():
+    global root
+    root = Tk()
+    root.resizable(False,False)
+    root.eval('tk::PlaceWindow . center')
+    root.title("Register")
+    root.geometry("300x250")
+    ...
+    Label(root,width="300", text="Please enter details below", bg="orange",fg="white").pack()
+    # labels for username and PWD
+    Label(root,text='Username').place(x=20,y=40)
+    Label(root,text='Password').place(x=20,y=80)
+    Label(root,text='Phone No.').place(x=20,y=120)
+    ...
+    def toggle_password():
+        if pwd.cget('show') == '':
+            pwd.config(show='*')
+            toggle_btn.config(image=closedEye)
+        else:
+            pwd.config(show='')
+            toggle_btn.config(image=openEye)
+
+    closedEye = PhotoImage(file = r"assets/closedEYE.png")
+    openEye = PhotoImage(file = r"assets/openEYE.png")
+    toggle_btn = Button(root, borderwidth=1, height=15,width=15,image=closedEye,command=toggle_password)
+    toggle_btn.place(x=220,y=82)
+    ...
+    # input fields
+    global name
+    name = Entry(root)
+    name.place(x=90,y=42)
+    name.focus()
+    #customised input field for PWD
+    global pwd
+    pwd = Entry(root)
+    pwd.config(show='*')
+    pwd.place(x=90,y=82)
+    # phone num entry
+    global pnum
+    pnum = Entry(root)
+    pnum.place(x=90,y=122)
+    ...
+    def goToLogin():
+        root.destroy()
+        loginScreen()
+    Button(root, text="Submit", width=10, height=1, bg="orange",command=verifyReg).place(x=105,y=160)
+    Button(root, text="Login", width=10, height=1, bg="orange",command=goToLogin).place(x=105,y=200)
+    ...
+    root.mainloop()
