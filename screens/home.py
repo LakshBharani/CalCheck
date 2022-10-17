@@ -1,5 +1,20 @@
 from tkinter import *
 import datetime
+import csv
+import random
+
+def getCSV():
+    global dbData
+    with open("Food Data.csv", "r") as dbFile:
+        dbReader = csv.reader(dbFile)
+        dbData = {}
+        i = 0
+        for line in dbReader:
+            if i == 0:
+                i+=1
+            else:
+                dbData.update({line[0]:{"cal":line[1],"unit":line[2],"mealType":line[3],
+                                "altMealType":line[4],"v/n":line[5],"dishType":line[6]}})
 
 def updateMealDetails(day="Not Set",monBg="teal",tueBg="teal",wedBg="teal",thursBg="teal",friBg="teal",satBg="teal",sunBg="teal"):
     global mon,tue,wed,thurs,fri,sat,sun
@@ -11,7 +26,19 @@ def updateMealDetails(day="Not Set",monBg="teal",tueBg="teal",wedBg="teal",thurs
     fri.config(bg=friBg)
     sat.config(bg=satBg)
     sun.config(bg=sunBg)
-
+    ...
+    getCSV()
+    bfastItems_filtered = {}
+    calories = 330
+    mealType = "breakfast"
+    cuisineType = "v"
+    for foodItem in dbData:
+        if int(dbData[foodItem]["cal"]) <= calories and (dbData[foodItem]["mealType"].casefold() == mealType or dbData[foodItem]["altMealType"].casefold() == mealType) and dbData[foodItem]["v/n"] == cuisineType:
+            tbdUpdated = {"qty":calories//int(dbData[foodItem]["cal"])}
+            print(tbdUpdated)
+            bfastItems_filtered.update({foodItem:dbData[foodItem].update(tbdUpdated)})    
+    # print(bfastItems_filtered)
+    ...
     mealDetails.config(state=NORMAL)
     mealDetails.delete(1.0,END)
     mealDetails.insert(END,"{:<10} {:<0}".format("","Welcome To CalCheck\n\n"))
@@ -102,3 +129,5 @@ def createHomePage(uname='JohnDoe'):
 
 # TODO -> Remove after design done
 createHomePage()
+
+            

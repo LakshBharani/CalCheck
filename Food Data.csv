@@ -1,7 +1,7 @@
-Food Item,Calories,Measuring Units,Meal Type,Alternate Meal Type
-Idli,39,count,Breakfast,none
-Dosa,133,count,Breakfast,none
-Aloo Parantha,177,count,Breakfast,Dinner
-Sandwich,266,count,Breakfast,Snack
-Smoothie,90,cup,Breakfast,Snack
-Salad,100,bowl,Breakfast,Snack
+Food Item,Calories,Measuring Units,Meal Type,Alternate Meal Type,V/N,Dish Type
+Idli,39,count,Breakfast,none,v,main
+Dosa,133,count,Breakfast,none,v,main
+Aloo Parantha,177,count,Breakfast,Dinner,v,main
+Sandwich,266,count,Breakfast,Snack,v,main
+Smoothie,90,cup,Breakfast,Snack,v,drink
+Salad,100,bowl,Breakfast,Snack,v,starter
