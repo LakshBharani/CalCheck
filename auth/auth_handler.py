@@ -19,15 +19,22 @@ def verifyLogin():
     if (uname == '' or password == ''):
         messagebox.showerror('Error', 'Fields cannot be left empty')
     elif (uname != '' and password != ''):
-        cursor.execute("select * from userdata where username = '" + uname + "' and password = '" + password + "'")
-        result = cursor.fetchall()
-        if result == []:
-            messagebox.showerror('Error', 'Invalid credentials')
-        else:
-            root.destroy()
-            print('SUCCESS: Log in')
-            createHomePage(uname.title())
-
+        try:
+            cursor.execute("select * from userdata where username = '" + uname + "' and password = '" + password + "'")
+            result = cursor.fetchall()
+            if result == []:
+                messagebox.showerror('Error', 'Invalid credentials')
+            else:
+                root.destroy()
+                print('SUCCESS: Log in')
+                createHomePage(uname.title())
+        except:
+            messagebox.showerror('Error',"Username and Password\ndoesn't exist")
+            try:
+                cursor.execute('create table userdata(username varchar(255) primary key not null, password varchar(255) not null, phoneNo varchar(255) not null, gender varchar(1) not null, height integer not null, weight integer not null, age integer not null)')
+                print('SUCCESS: Table Created')
+            except:
+                print('SUCCESS: Table exists')        
     else:
         messagebox.showerror('Error','Incorrect Credentials')
 
@@ -37,22 +44,46 @@ def verifyReg():
     uname = name.get()
     password = pwd.get()
     phone = pnum.get()
+
+    cursor.execute(f"select username='{uname}' from userdata")
+    
     if (uname == '' or password == '' or phone == ''):
         messagebox.showerror('Error', 'Fields cannot be left empty')
+    elif (cursor.fetchone()[0] == 1):
+        messagebox.showerror('Error', 'Username exists')
     elif (len(password) < 4):
         messagebox.showerror('Error', 'Password must contain\n4 or more characters')
     elif (len(phone) != 10):
         messagebox.showerror('Error', 'Phone no. must contain\n10 characters')
-    elif (uname != '' and password != '' and len(phone) == 10):
-        register()
+    else:
+        root.destroy()
+        personalInfoScreen()
+
+def verifyPersonalInfo():
+    global gender, height, weight, age
+    gender = genderEntry.get().upper()
+    height = heightEntry.get()
+    weight = weightEntry.get()
+    age = ageEntry.get()
+
+    if (gender == "" or height == "" or weight == "" or age == ""):
+        messagebox.showerror('Error', 'Fields cannot be left empty')
+    elif (gender not in 'fFmM'):
+        messagebox.showerror('Error','Invalid gender (M/F)')
+    elif (int(height) <= 0):
+        messagebox.showerror('Error','Height out of range\nMust be greater than 0')
+    elif (int(weight) <= 0):
+        messagebox.showerror('Error','Weight out of range\nMust be greater than 0')
+    elif (int(age) <= 0):
+        messagebox.showerror('Error','Age out of range\nMust be greater than 0')
+
+    if register(callPersonalInfoScreen=False) == True:
         root.destroy()
         print('SUCCESS: Registered')
-        createHomePage()
-    else:
-        messagebox.showerror('Error','Incorrect Username and Password')  
+        
 
 # enter the values in the database
-def register():
+def register(callPersonalInfoScreen):
     # check if database and table exist
     try:
         cursor.execute('create database DietTracker')
@@ -62,18 +93,58 @@ def register():
     
     cursor.execute('use DietTracker')
     try:
-        cursor.execute('create table userdata(username varchar(255) primary key not null, password varchar(255) not null, phoneNo varchar(255) not null)')
+        cursor.execute('create table userdata(username varchar(255) primary key not null, password varchar(255) not null, phoneNo varchar(255) not null, gender varchar(1), height varchar(255), weight varchar(255), age varchar(255))')
         print('SUCCESS: Table Created')
     except:
         print('SUCCESS: Table exists')
     try:
-        query = f"insert into userdata values('{uname}','{password}','{phone}');"
+        if callPersonalInfoScreen:
+            personalInfoScreen()
+        query = f"insert into userdata values('{uname}','{password}','{phone}','{gender}','{height}','{weight}','{age}');"
         print(query)
         cursor.execute(query)
         mydb.commit()
+        root.destroy()
+        createHomePage(uname=uname)
+        return True
     except:
-        print('ERROR: Username exists')
-        messagebox.showerror('Error', 'Username exists')
+        return False
+...
+# personal info screen
+def personalInfoScreen():
+    global root
+    root = Tk()
+    root.resizable(False,False)
+    root.eval('tk::PlaceWindow . center')
+    root.title("Login")
+    root.geometry("300x250")
+    ...
+    Label(root,width="300", text="Please enter details below", bg="orange",fg="white").pack()
+    # labels for usergender and PWD
+    Label(root,text='Gender').place(x=20,y=40)
+    Label(root,text='Height (cm)').place(x=20,y=80)
+    Label(root,text='Weight (kg)').place(x=20,y=120)
+    Label(root,text='Age (years)').place(x=20,y=160)
+    ...
+    # input fields
+    global genderEntry
+    genderEntry = Entry(root)
+    genderEntry.place(x=90,y=42)
+    genderEntry.focus()
+
+    global heightEntry
+    heightEntry = Entry(root)
+    heightEntry.place(x=90,y=82)
+
+    global weightEntry
+    weightEntry = Entry(root)
+    weightEntry.place(x=90,y=122)
+
+    global ageEntry
+    ageEntry = Entry(root)
+    ageEntry.place(x=90,y=162)
+    ...
+    Button(root, text="Submit", width=10, height=1, bg="orange",command=verifyPersonalInfo).place(x=105,y=200)
 
 # login window
 def loginScreen():
@@ -167,7 +238,7 @@ def regScreen():
     def goToLogin():
         root.destroy()
         loginScreen()
-    Button(root, text="Submit", width=10, height=1, bg="orange",command=verifyReg).place(x=105,y=160)
+    Button(root, text="Next", width=10, height=1, bg="orange",command=verifyReg).place(x=105,y=160)
     Button(root, text="Login", width=10, height=1, bg="orange",command=goToLogin).place(x=105,y=200)
     ...
     root.mainloop()

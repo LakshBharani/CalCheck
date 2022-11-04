@@ -28,16 +28,21 @@ def updateMealDetails(day="Not Set",monBg="teal",tueBg="teal",wedBg="teal",thurs
     sun.config(bg=sunBg)
     ...
     getCSV()
-    bfastItems_filtered = {}
-    calories = 330
+    meal_menu_filtered = {}
+    meal_menu_final = {}
+    key_li = []
+    calories = 200
     mealType = "breakfast"
     cuisineType = "v"
     for foodItem in dbData:
         if int(dbData[foodItem]["cal"]) <= calories and (dbData[foodItem]["mealType"].casefold() == mealType or dbData[foodItem]["altMealType"].casefold() == mealType) and dbData[foodItem]["v/n"] == cuisineType:
-            tbdUpdated = {"qty":calories//int(dbData[foodItem]["cal"])}
-            print(tbdUpdated)
-            bfastItems_filtered.update({foodItem:dbData[foodItem].update(tbdUpdated)})    
-    # print(bfastItems_filtered)
+            dbData[foodItem]["qty"] = calories//int(dbData[foodItem]["cal"])
+            meal_menu_filtered.update({foodItem:dbData[foodItem]})
+    for key in meal_menu_filtered: key_li.append(key)
+    rand_key = random.choice(key_li)
+    meal_menu_final = {rand_key : meal_menu_filtered[rand_key]}
+    print(meal_menu_final)
+
     ...
     mealDetails.config(state=NORMAL)
     mealDetails.delete(1.0,END)
@@ -128,6 +133,6 @@ def createHomePage(uname='JohnDoe'):
     root.mainloop()
 
 # TODO -> Remove after design done
-createHomePage()
+# createHomePage()
 
             
