@@ -10,7 +10,7 @@ mydb = mysql.connector.connect(
   password="root",
   database = "DietTracker",
 )
-cursor = mydb.cursor()
+cursor = mydb.cursor(buffered=True)
 # verify login fields
 def verifyLogin():
     global uname, password
