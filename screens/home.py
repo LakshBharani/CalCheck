@@ -27,14 +27,28 @@ def createWeekMenu(day="Not Set",monBg="teal",tueBg="teal",wedBg="teal",thursBg=
     sat.config(bg=satBg)
     sun.config(bg=sunBg)
     ...
-    if createNewMenu == True:
-        getCSV()
-        meal_menu_final = {}
-        calories = 200
-        mealTypes = ["breakfast","lunch","snack","dinner"]
-        days = ['mon','tue','wed','thurs','fri','sat','sun']
-        cuisineType = "v"
-        for day in days:
+    getCSV()
+    meal_menu_final = {}
+    calories = 200
+    mealTypes = ["breakfast","lunch","snack","dinner"]
+    days = ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday']
+    cuisineType = "v"
+    with open("weekMenu.txt","r") as weekMenuFile:
+        prevDate_formatted = ''
+        prevDate = weekMenuFile.readline()
+        for i in range(16):
+            if prevDate[i] != '-' and prevDate[i] != ' ' and prevDate[i] != ":":
+                prevDate_formatted += prevDate[i]
+        print(prevDate_formatted)
+    dateNow = str(datetime.datetime.today())
+    dateNow_formatted = ''
+    for i in range(16):
+        if dateNow[i] != '-' and dateNow[i] != ' ' and dateNow[i] != ":":
+            dateNow_formatted += dateNow[i]
+    print(dateNow_formatted)
+    print(day)
+    if ((int(dateNow_formatted) > int(prevDate_formatted) and datetime.datetime.today().weekday() == 0) or prevDate == '0000-00-00 00:00:00'):
+        for meal_day in days:
             dayMenu = {}
             for mealType in mealTypes:
                 meal_menu_filtered = {}
@@ -46,9 +60,13 @@ def createWeekMenu(day="Not Set",monBg="teal",tueBg="teal",wedBg="teal",thursBg=
                 for key in meal_menu_filtered: key_li.append(key)
                 rand_key = random.choice(key_li)
                 dayMenu.update({mealType:{rand_key : meal_menu_filtered[rand_key]}})
-                meal_menu_final.update({day:dayMenu})
+                meal_menu_final.update({meal_day:dayMenu})
+        ...
+        if meal_menu_final != {}:
+            with open("weekMenu.txt","w") as weekMenuFile:
+                weekMenuFile.write(str(datetime.datetime.today())+"\n")
+                weekMenuFile.write(str(meal_menu_final))
         print(meal_menu_final)
-
     ...
     mealDetails.config(state=NORMAL)
     mealDetails.delete(1.0,END)
@@ -147,6 +165,6 @@ def createHomePage(uname='JohnDoe'):
     root.mainloop()
 
 # TODO -> Remove after design done
-# createHomePage()
+createHomePage()
 
             

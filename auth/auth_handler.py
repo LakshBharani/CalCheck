@@ -2,13 +2,13 @@ from tkinter import *
 from tkinter import messagebox
 import mysql.connector
 from screens.home import createHomePage
+import datetime
 
 # mysql database connector
 mydb = mysql.connector.connect(
   host="localhost",
   user="laksh",
   password="root",
-  database = "DietTracker",
 )
 cursor = mydb.cursor(buffered=True)
 # verify login fields
@@ -44,12 +44,25 @@ def verifyReg():
     uname = name.get()
     password = pwd.get()
     phone = pnum.get()
-
-    cursor.execute(f"select username='{uname}' from userdata")
+    # check if database and table exist
+    try:
+        cursor.execute('create database DietTracker')
+        print('SUCCESS: Database Created')
+    except:
+        print('SUCCESS: Database exists')
     
+    cursor.execute('use DietTracker')
+    try:
+        cursor.execute('create table userdata(username varchar(255) primary key not null, password varchar(255) not null, phoneNo varchar(255) not null, gender varchar(1), height varchar(255), weight varchar(255), age varchar(255))')
+        print('SUCCESS: Table Created')
+    except:
+        print('SUCCESS: Table exists')
+
+    cursor.execute(f"select * from userdata where username='{uname}'")
+
     if (uname == '' or password == '' or phone == ''):
         messagebox.showerror('Error', 'Fields cannot be left empty')
-    elif (cursor.fetchone()[0] == 1):
+    elif (cursor.fetchall() != []):
         messagebox.showerror('Error', 'Username exists')
     elif (len(password) < 4):
         messagebox.showerror('Error', 'Password must contain\n4 or more characters')
@@ -84,19 +97,6 @@ def verifyPersonalInfo():
 
 # enter the values in the database
 def register(callPersonalInfoScreen):
-    # check if database and table exist
-    try:
-        cursor.execute('create database DietTracker')
-        print('SUCCESS: Database Created')
-    except:
-        print('SUCCESS: Database exists')
-    
-    cursor.execute('use DietTracker')
-    try:
-        cursor.execute('create table userdata(username varchar(255) primary key not null, password varchar(255) not null, phoneNo varchar(255) not null, gender varchar(1), height varchar(255), weight varchar(255), age varchar(255))')
-        print('SUCCESS: Table Created')
-    except:
-        print('SUCCESS: Table exists')
     try:
         if callPersonalInfoScreen:
             personalInfoScreen()
@@ -104,6 +104,8 @@ def register(callPersonalInfoScreen):
         print(query)
         cursor.execute(query)
         mydb.commit()
+        with open("weekMenu.txt","w") as file:
+            file.write('0000-00-00 00:00:00')
         root.destroy()
         createHomePage(uname=uname)
         return True
