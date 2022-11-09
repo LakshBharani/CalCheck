@@ -2,6 +2,16 @@ from tkinter import *
 import datetime
 import csv
 import random
+import mysql.connector
+
+# mysql database connector
+mydb = mysql.connector.connect(
+  host="localhost",
+  user="laksh",
+  password="root",
+  database="diettracker"
+)
+cursor = mydb.cursor(buffered=True)
 
 def getCSV():
     global dbData
@@ -33,13 +43,19 @@ def createWeekMenu(day="Not Set",monBg="teal",tueBg="teal",wedBg="teal",thursBg=
     mealTypes = ["breakfast","lunch","snack","dinner"]
     days = ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday']
     cuisineType = "v"
-    with open("weekMenu.txt","r") as weekMenuFile:
-        prevDate_formatted = ''
-        prevDate = weekMenuFile.readline()
-        for i in range(16):
-            if prevDate[i] != '-' and prevDate[i] != ' ' and prevDate[i] != ":":
-                prevDate_formatted += prevDate[i]
-        print(prevDate_formatted)
+    # get prev date
+    cursor.execute(f"select date from menudata where username='{username}'")
+    allDates = cursor.fetchall()
+    prevDate = '00000000000000'
+    for date in allDates:
+        tempPrevDate = ''
+        for i in range(19):
+            if date[0][i] != '-' and date[0][i] != ' ' and date[0][i] != ':':
+                tempPrevDate += date[0][i]
+        if int(prevDate) <= int(tempPrevDate):
+            prevDate = tempPrevDate
+    print(prevDate)
+    # get current date
     dateNow = str(datetime.datetime.today())
     dateNow_formatted = ''
     for i in range(16):
@@ -47,7 +63,7 @@ def createWeekMenu(day="Not Set",monBg="teal",tueBg="teal",wedBg="teal",thursBg=
             dateNow_formatted += dateNow[i]
     print(dateNow_formatted)
     print(day)
-    if ((int(dateNow_formatted) > int(prevDate_formatted) and datetime.datetime.today().weekday() == 0) or prevDate == '0000-00-00 00:00:00'):
+    if ((int(dateNow_formatted) > int(prevDate) and datetime.datetime.today().weekday() == 0) or prevDate == '0000-00-00 00:00:00'):
         for meal_day in days:
             dayMenu = {}
             for mealType in mealTypes:
@@ -109,6 +125,8 @@ def createWeekMenu(day="Not Set",monBg="teal",tueBg="teal",wedBg="teal",thursBg=
 ...
 def createHomePage(uname='JohnDoe'):
     global root
+    global username
+    username = uname
     root = Tk()
     root.resizable(False,False)
     window_height = 600

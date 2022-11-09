@@ -1,0 +1,2 @@
+create table menudata (username varchar(255), date varchar(19), day varchar(255), meal varchar(255), dish varchar(255), cal varchar(255), unit varchar(255), mealtype varchar(255), altmealtype varchar(255), preference varchar(1), dishType varchar(255), quantity varchar(255));
+insert into menudata values('JohnDoe','2022-11-07 17:45:12','Monday','Breakfast','Upma','30','bowl','breakfast','dinner','v','main','1');
