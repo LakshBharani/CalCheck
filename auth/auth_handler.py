@@ -16,6 +16,7 @@ def verifyLogin():
     global uname, password
     uname = name.get()
     password = pwd.get()
+    cursor.execute('use DietTracker')
     if (uname == '' or password == ''):
         messagebox.showerror('Error', 'Fields cannot be left empty')
     elif (uname != '' and password != ''):
@@ -30,11 +31,6 @@ def verifyLogin():
                 createHomePage(uname.title())
         except:
             messagebox.showerror('Error',"Username and Password\ndoesn't exist")
-            try:
-                cursor.execute('create table userdata(username varchar(255) primary key not null, password varchar(255) not null, phoneNo varchar(255) not null, gender varchar(1) not null, height integer not null, weight integer not null, age integer not null)')
-                print('SUCCESS: Table Created')
-            except:
-                print('SUCCESS: Table exists')        
     else:
         messagebox.showerror('Error','Incorrect Credentials')
 
@@ -44,13 +40,6 @@ def verifyReg():
     uname = name.get()
     password = pwd.get()
     phone = pnum.get()
-    # check if database and table exist
-    try:
-        cursor.execute('create database DietTracker')
-        print('SUCCESS: Database Created')
-    except:
-        print('SUCCESS: Database exists')
-    
     cursor.execute('use DietTracker')
     try:
         cursor.execute('create table userdata(username varchar(255) primary key not null, password varchar(255) not null, phoneNo varchar(255) not null, gender varchar(1), height varchar(255), weight varchar(255), age varchar(255))')

@@ -42,7 +42,7 @@ def createWeekMenu(day="Not Set",monBg="teal",tueBg="teal",wedBg="teal",thursBg=
     calories = 200
     mealTypes = ["breakfast","lunch","snack","dinner"]
     days = ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday']
-    cuisineType = "v"
+    preference = "v"
     # get prev date
     cursor.execute(f"select date from menudata where username='{username}'")
     allDates = cursor.fetchall()
@@ -70,7 +70,7 @@ def createWeekMenu(day="Not Set",monBg="teal",tueBg="teal",wedBg="teal",thursBg=
                 meal_menu_filtered = {}
                 key_li = []
                 for foodItem in dbData:
-                    if int(dbData[foodItem]["cal"]) <= calories and (dbData[foodItem]["mealType"].casefold() == mealType or dbData[foodItem]["altMealType"].casefold() == mealType) and dbData[foodItem]["v/n"] == cuisineType:
+                    if int(dbData[foodItem]["cal"]) <= calories and (dbData[foodItem]["mealType"].casefold() == mealType or dbData[foodItem]["altMealType"].casefold() == mealType) and dbData[foodItem]["v/n"] == preference:
                         dbData[foodItem]["qty"] = calories//int(dbData[foodItem]["cal"])
                         meal_menu_filtered.update({foodItem:dbData[foodItem]})
                 for key in meal_menu_filtered: key_li.append(key)
@@ -86,39 +86,39 @@ def createWeekMenu(day="Not Set",monBg="teal",tueBg="teal",wedBg="teal",thursBg=
     ...
     mealDetails.config(state=NORMAL)
     mealDetails.delete(1.0,END)
-    mealDetails.insert(END,"{:<10} {:<0}".format("","Welcome To CalCheck\n\n"))
-    mealDetails.insert(END,"{:<10} {:<0} {:<0}".format("",f"{day}'s","Diet Plan\n"))
-    mealDetails.insert(END,"=============+=============+============\n")
-    mealDetails.insert(END,"                Breakfast               \n")
-    mealDetails.insert(END,"=============+=============+============\n")
-    mealDetails.insert(END,"    Item          Count       Calories  \n")
-    mealDetails.insert(END,"=============+=============+============\n")
-    mealDetails.insert(END,"     Idli    |      2      |     120    \n")
-    mealDetails.insert(END,"=============+=============+============\n\n")
+    mealDetails.insert(END,"{:<25} {:<0}".format("","Welcome To CalCheck\n\n"))
+    mealDetails.insert(END,"{:<25} {:<0} {:<0}".format("",f"{day}'s","Diet Plan\n"))
+    mealDetails.insert(END,"=======================+=======================+======================\n")
+    mealDetails.insert(END,"                                Breakfast               \n")
+    mealDetails.insert(END,"=======================+=======================+======================\n")
+    mealDetails.insert(END,"         Item                   Count                   Calories      \n")
+    mealDetails.insert(END,"=======================+=======================+======================\n")
+    mealDetails.insert(END,"                       |                       |                      \n")
+    mealDetails.insert(END,"=======================+=======================+======================\n\n")
     
-    mealDetails.insert(END,"=============+=============+============\n")
-    mealDetails.insert(END,"                  Lunch                 \n")
-    mealDetails.insert(END,"=============+=============+============\n")
-    mealDetails.insert(END,"    Item          Count       Calories  \n")
-    mealDetails.insert(END,"=============+=============+============\n")
-    mealDetails.insert(END,"   Parantha  |      2      |     536    \n")
-    mealDetails.insert(END,"=============+=============+============\n\n")
+    mealDetails.insert(END,"=======================+=======================+======================\n")
+    mealDetails.insert(END,"                                Lunch                 \n")
+    mealDetails.insert(END,"=======================+=======================+======================\n")
+    mealDetails.insert(END,"         Item                   Count                   Calories      \n")
+    mealDetails.insert(END,"=======================+=======================+======================\n")
+    mealDetails.insert(END,"                       |                       |                      \n")
+    mealDetails.insert(END,"=======================+=======================+======================\n\n")
 
-    mealDetails.insert(END,"=============+=============+============\n")
-    mealDetails.insert(END,"                  Snacks                \n")
-    mealDetails.insert(END,"=============+=============+============\n")
-    mealDetails.insert(END,"    Item          Count       Calories  \n")
-    mealDetails.insert(END,"=============+=============+============\n")
-    mealDetails.insert(END,"   Smoothie  |      1      |     430    \n")
-    mealDetails.insert(END,"=============+=============+============\n\n")
+    mealDetails.insert(END,"=======================+=======================+======================\n")
+    mealDetails.insert(END,"                                Snacks                \n")
+    mealDetails.insert(END,"=======================+=======================+======================\n")
+    mealDetails.insert(END,"         Item                   Count                   Calories      \n")
+    mealDetails.insert(END,"=======================+=======================+======================\n")
+    mealDetails.insert(END,"                       |                       |                      \n")
+    mealDetails.insert(END,"=======================+=======================+======================\n\n")
 
-    mealDetails.insert(END,"=============+=============+============\n")
-    mealDetails.insert(END,"                  Dinner                \n")
-    mealDetails.insert(END,"=============+=============+============\n")
-    mealDetails.insert(END,"    Item          Count       Calories  \n")
-    mealDetails.insert(END,"=============+=============+============\n")
-    mealDetails.insert(END,"     Dosa    |      3      |     300    \n")
-    mealDetails.insert(END,"=============+=============+============\n")
+    mealDetails.insert(END,"=======================+=======================+======================\n")
+    mealDetails.insert(END,"                                Dinner                \n")
+    mealDetails.insert(END,"=======================+=======================+======================\n")
+    mealDetails.insert(END,"         Item                   Count                   Calories      \n")
+    mealDetails.insert(END,"=======================+=======================+======================\n")
+    mealDetails.insert(END,"                       |                       |                      \n")
+    mealDetails.insert(END,"=======================+=======================+======================\n")
     mealDetails.config(state=DISABLED)
 
 
@@ -131,6 +131,7 @@ def createHomePage(uname='JohnDoe'):
     root.resizable(False,False)
     window_height = 600
     window_width = 600
+    root.title('Home')
 
     screen_width = root.winfo_screenwidth()
     screen_height = root.winfo_screenheight()
@@ -140,29 +141,31 @@ def createHomePage(uname='JohnDoe'):
 
     root.geometry("{}x{}+{}+{}".format(window_width, window_height, x_cordinate, y_cordinate))
     ...
-    Button(root, borderwidth=1, height=1,width=9,text="More",bg="teal",fg="white",command='toggle_password').grid(row=0,column=0,sticky= W+E+N+S)
+    # Button(root, borderwidth=1, height=1,width=9,text="More",bg="teal",fg="white",command='toggle_password').grid(row=0,column=0,sticky= W+E+N+S)
+    Label(root,width=9,height=1, text='',bg="orange").grid(row=0,column=0,sticky= W+E+N+S)
     Button(root, borderwidth=1, height=1,width=9,text="Logout",bg="teal",fg="white",command='toggle_password').grid(row=0,column=3,sticky= W+E+N+S)
     Label(root,width=65,height=1, text=f"Welcome Back {uname}", bg="orange",fg="white").grid(row=0,column=1,sticky= W+E+N+S)
+    Button(root, borderwidth=1, height=3,width=17,text="Exit",bg="orange",fg="white",command='').place(x=457,y=535)
     ...
     global mealDetails
-    mealDetails = Text(root, height = 20,width = 40,bg = "white",relief=RIDGE,borderwidth=2)
-    mealDetails.place(x=150,y=50)
+    mealDetails = Text(root, height = 30,width = 70,bg = "white",relief=RIDGE,borderwidth=2)
+    mealDetails.place(x=17.5,y=38)
     ...
     global mon,tue,wed,thurs,fri,sat,sun
-    mon = Button(root, borderwidth=1, height=2,width=5,text="Mon",bg="teal",fg="white",command=lambda: createWeekMenu(monBg="red",day="Monday"))
-    mon.place(x=150,y=400)
-    tue = Button(root, borderwidth=1, height=2,width=5,text="Tue",bg="teal",fg="white",command=lambda: createWeekMenu(tueBg="red",day="Tuesday"))
-    tue.place(x=197,y=400)
-    wed = Button(root, borderwidth=1, height=2,width=5,text="Wed",bg="teal",fg="white",command=lambda: createWeekMenu(wedBg="red",day="Wednesday"))
-    wed.place(x=244,y=400)
-    thurs = Button(root, borderwidth=1, height=2,width=5,text="Thurs",bg="teal",fg="white",command=lambda: createWeekMenu(thursBg="red",day="Thursday"))
-    thurs.place(x=291,y=400)
-    fri = Button(root, borderwidth=1, height=2,width=5,text="Fri",bg="teal",fg="white",command=lambda: createWeekMenu(friBg="red",day="Friday"))
-    fri.place(x=337,y=400)
-    sat = Button(root, borderwidth=1, height=2,width=5,text="Sat",bg="teal",fg="white",command=lambda: createWeekMenu(satBg="red",day="Saturday"))
-    sat.place(x=383,y=400)
-    sun = Button(root, borderwidth=1, height=2,width=5,text="Sun",bg="teal",fg="white",command=lambda: createWeekMenu(sunBg="red",day="Sunday"))
-    sun.place(x=430,y=400)
+    mon = Button(root, borderwidth=1, height=3,width=7,text="Mon",bg="teal",fg="white",command=lambda: createWeekMenu(monBg="red",day="Monday"))
+    mon.place(x=17,y=535)
+    tue = Button(root, borderwidth=1, height=3,width=7,text="Tue",bg="teal",fg="white",command=lambda: createWeekMenu(tueBg="red",day="Tuesday"))
+    tue.place(x=80,y=535)
+    wed = Button(root, borderwidth=1, height=3,width=7,text="Wed",bg="teal",fg="white",command=lambda: createWeekMenu(wedBg="red",day="Wednesday"))
+    wed.place(x=143,y=535)
+    thurs = Button(root, borderwidth=1, height=3,width=7,text="Thurs",bg="teal",fg="white",command=lambda: createWeekMenu(thursBg="red",day="Thursday"))
+    thurs.place(x=206,y=535)
+    fri = Button(root, borderwidth=1, height=3,width=7,text="Fri",bg="teal",fg="white",command=lambda: createWeekMenu(friBg="red",day="Friday"))
+    fri.place(x=269,y=535)
+    sat = Button(root, borderwidth=1, height=3,width=7,text="Sat",bg="teal",fg="white",command=lambda: createWeekMenu(satBg="red",day="Saturday"))
+    sat.place(x=331,y=535)
+    sun = Button(root, borderwidth=1, height=3,width=7,text="Sun",bg="teal",fg="white",command=lambda: createWeekMenu(sunBg="red",day="Sunday"))
+    sun.place(x=394,y=535)
     ...
     if datetime.datetime.today().weekday() == 0:
         createWeekMenu(monBg="red",day="Monday")
@@ -183,6 +186,6 @@ def createHomePage(uname='JohnDoe'):
     root.mainloop()
 
 # TODO -> Remove after design done
-createHomePage()
+# createHomePage()
 
             
