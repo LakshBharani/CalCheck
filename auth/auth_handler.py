@@ -2,7 +2,6 @@ from tkinter import *
 from tkinter import messagebox
 import mysql.connector
 from screens.home import createHomePage
-import datetime
 
 # mysql database connector
 mydb = mysql.connector.connect(
@@ -27,8 +26,8 @@ def verifyLogin():
                 messagebox.showerror('Error', 'Invalid credentials')
             else:
                 root.destroy()
-                print('SUCCESS: Log in')
                 createHomePage(uname.title())
+                print('SUCCESS: Log in')
         except:
             messagebox.showerror('Error',"Username and Password\ndoesn't exist")
     else:
@@ -78,10 +77,10 @@ def verifyPersonalInfo():
         messagebox.showerror('Error','Weight out of range\nMust be greater than 0')
     elif (int(age) <= 0):
         messagebox.showerror('Error','Age out of range\nMust be greater than 0')
-
-    if register(callPersonalInfoScreen=False) == True:
-        root.destroy()
-        print('SUCCESS: Registered')
+    else:
+        if register(callPersonalInfoScreen=False) == True:
+            root.destroy()
+            ('SUCCESS: Registered')
         
 
 # enter the values in the database

@@ -1,38 +1,29 @@
-Food Item,Calorie,Measuring Unit,Meal Type,Alternate meal type,V/N,Dish Type
-Idli,39,count,Breakfast,none,v,main
-Dosa,133,count,Breakfast,none,v,main
-Aloo Parantha,177,count,Breakfast,Dinner,v,main
-Sandwich,266,count,Breakfast,Snack,v,main
-Smoothie,90,cup,Breakfast,Snack,v,drink
-Salad,100,bowl,Breakfast,Snack,v,starter
-Rasgulla,106,count,Lunch,Dinner,v,dessert
-Pongal,200,bowl,Breakfast,none,v,main
-Lemon Rice,175,bowl,Lunch,Dinner,v,main
-Kulfi,161,count,Lunch,Dinner,v,dessert
-Rajma Chawal,261,bowl,Lunch,Dinner,v,main
-Puliyogarai,106,bowl,Breakfast,none,v,main
-Pulav,249,count,Lunch,Dinner,v,main
-Curd,98,bowl,Lunch,Dinner,v,side
-Chapathi+Dal Makhni,202,count,Lunch,Dinner,v,main
-Pav Bhaji,150,count,Lunch,Dinner,v,main
-Masala Dosa,168,count,Breakfast,none,v,main
-Pakoda,166,count,snack,none,v,starter
-Ras malai,331,count,snack,none,v,dessert
-Appam+Stew,669,bowl,Breakfast,none,v,main
-Khichdi ,168,bowl,Breakfast,none,v,main
-Gulab Jamun,143,count,snack,none,v,dessert
-Samosa,262,count,snack,none,v,side
-Upma,192,plate,Breakfast,none,v,main
-Poha,250,plate,Breakfast,none,v,main
-Paratha+Egg curry,282,count,Lunch,Dinner,v,main
-Chicken Biryani,720,plate,Lunch,Dinner,n,main
-Vada Pav,304,count,snack,none,v,side
-Chole Bature,427,count,Lunch,Dinner,v,main
-Kheer,235,bowl,Lunch,Dinner,v,dessert
-Lassi,183,cup,snack,none,v,dessert
-Dosa+Sambar,363,count,Breakfast,none,v,main
-Rice+Korma,383,bowl,Lunch,Dinner,n,side
-Jalebi,45,count,snack,none,v,dessert
-Naan+ButterChicken,578,count,Lunch,Dinner,n,main
-Idli+Chutney,69,count,Breakfast,none,v,main
-Roti+Paalak Paneer,576,count,Lunch,Dinner,v,main
+Food Item,Calorie,Measuring Unit,Meal Type,Alternate meal type,V/N,
+Roti + Egg Bhurji,123,count,Breakfast,Dinner,n,
+Masala Oatmeal,198,bowl,Breakfast,none,v,
+Ragi Idli,76,count,Breakfast,none,v,
+Vegetable Upma,253,bowl,Breakfast,Snack,v,
+Sabudana Khichdi,141,serving,Breakfast,Snack,v,
+Salad,120,bowl,Breakfast,Snack,v,
+Pongal,200,bowl,Breakfast,none,v,
+Lemon Rice,175,bowl,Lunch,Dinner,v,
+Rajma Chawal,261,bowl,Lunch,Dinner,v,
+Puliyogarai,106,bowl,Breakfast,Dinner,v,
+Pulav,249,count,Lunch,Dinner,v,
+Roti + Dal Makhni,202,count,Lunch,Dinner,v,
+Pav Bhaji,150,serving,Lunch,Dinner,v,
+Rice + Mango Curry,580,bowl,Lunch,Dinner,v,
+Appam+Stew,669,bowl,Breakfast,none,v,
+Khichdi,168,bowl,Breakfast,Dinner,v,
+Poha,250,plate,Breakfast,none,v,
+Paratha + Egg curry,282,count,Lunch,Dinner,v,
+Vada Pav,304,count,snack,none,v,
+Rice + Veg Bhuna,428,bowl,Lunch,Dinner,v,
+Rice + Paneer,383,bowl,Lunch,Dinner,v,
+Roti + Malai Kofta,378,count,Lunch,Dinner,v,
+Roti + Paalak Paneer,376,count,Lunch,Dinner,v,
+Rice + Red Lentil Dal,607,bowl,Dinner,Lunch,v,
+Paneer Tikka,223,serving,Dinner,Snack,v,
+Rice + Soyabean,218,bowl,Dinner,Lunch,v,
+Pakoda,60,serving,Snack,none,v,
+Aloo Tikki,113,serving,Snack,None,v,

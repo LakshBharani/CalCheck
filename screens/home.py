@@ -26,7 +26,7 @@ def getCSV():
                 dbData.update({line[0]:{"cal":line[1],"unit":line[2],"mealType":line[3],
                                 "altMealType":line[4],"v/n":line[5],"dishType":line[6]}})
 
-def createWeekMenu(day="Not Set",monBg="teal",tueBg="teal",wedBg="teal",thursBg="teal",friBg="teal",satBg="teal",sunBg="teal",createNewMenu=False):
+def createWeekMenu(day="Not Set",monBg="teal",tueBg="teal",wedBg="teal",thursBg="teal",friBg="teal",satBg="teal",sunBg="teal"):
     global mon,tue,wed,thurs,fri,sat,sun
     global mealDetails
     mon.config(bg=monBg)
@@ -39,7 +39,18 @@ def createWeekMenu(day="Not Set",monBg="teal",tueBg="teal",wedBg="teal",thursBg=
     ...
     getCSV()
     meal_menu_final = {}
-    calories = 200
+    cursor.execute(f"select weight from userdata where username = '{username}'")
+    weight = int(cursor.fetchone()[0])
+    cursor.execute(f"select height from userdata where username = '{username}'")
+    height = int(cursor.fetchone()[0])
+    cursor.execute(f"select age from userdata where username = '{username}'")
+    age = int(cursor.fetchone()[0])
+    cursor.execute(f"select gender from userdata where username = '{username}'")
+    gender = str(cursor.fetchone()[0])
+    if gender.casefold() == "m":
+        calories = 66.5+(13.8*weight+5*height/6.8*age)
+    else:
+        calories = 655+(9.6*weight+1.9*height/4.7*age)
     mealTypes = ["breakfast","lunch","snack","dinner"]
     days = ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday']
     preference = "v"
@@ -49,21 +60,22 @@ def createWeekMenu(day="Not Set",monBg="teal",tueBg="teal",wedBg="teal",thursBg=
     prevDate = '00000000000000'
     for date in allDates:
         tempPrevDate = ''
-        for i in range(19):
+        for i in range(10):
             if date[0][i] != '-' and date[0][i] != ' ' and date[0][i] != ':':
                 tempPrevDate += date[0][i]
         if int(prevDate) <= int(tempPrevDate):
             prevDate = tempPrevDate
-    print(prevDate)
+    # print(prevDate)
     # get current date
-    dateNow = str(datetime.datetime.today())
+    dateNow = str(datetime.datetime.today())[:19]
     dateNow_formatted = ''
-    for i in range(16):
+    for i in range(10):
         if dateNow[i] != '-' and dateNow[i] != ' ' and dateNow[i] != ":":
             dateNow_formatted += dateNow[i]
-    print(dateNow_formatted)
+    # print(dateNow_formatted)
     print(day)
-    if ((int(dateNow_formatted) > int(prevDate) and datetime.datetime.today().weekday() == 0) or prevDate == '0000-00-00 00:00:00'):
+    if ((int(dateNow_formatted) > int(prevDate) and datetime.datetime.today().weekday() == 0) or prevDate == '00000000000000'):
+        # making week menu for the user
         for meal_day in days:
             dayMenu = {}
             for mealType in mealTypes:
@@ -83,45 +95,80 @@ def createWeekMenu(day="Not Set",monBg="teal",tueBg="teal",wedBg="teal",thursBg=
                 weekMenuFile.write(str(datetime.datetime.today())+"\n")
                 weekMenuFile.write(str(meal_menu_final))
         print(meal_menu_final)
+        
+        for dayKey in meal_menu_final:
+            print(dayKey)
+            for mealKey in list(meal_menu_final[dayKey].keys()):
+                print(mealKey)
+                foodItemKey = meal_menu_final[dayKey][mealKey][list(meal_menu_final[dayKey][mealKey].keys())[0]]
+                print(foodItemKey)
+                query = f"insert into menudata values('{username}','{dateNow}','{dayKey}','{mealKey}','{list(meal_menu_final[dayKey][mealKey].keys())[0]}','{foodItemKey['cal']}','{foodItemKey['unit']}','{foodItemKey['mealType']}','{foodItemKey['altMealType']}','{foodItemKey['v/n']}','{foodItemKey['qty']}');"
+                print(query)
+                cursor.execute(query)
+                mydb.commit()
+                print("Added to database!")
+    ...
+    def formatMealDeets(inputTup):
+        inputLi = list(inputTup)
+        for i  in range(len(inputLi)):
+            elem = inputLi[i]
+            lenElem = len(elem)
+            numSpacesPreceding = int((23-lenElem)/2)
+            if i != 2: formattedElem = " "*numSpacesPreceding + elem + " "*(23-lenElem-numSpacesPreceding)
+            else: formattedElem = " "*numSpacesPreceding + elem + " "*(22-lenElem-numSpacesPreceding)
+            inputLi[i] = formattedElem
+        outputTup = tuple(inputLi)
+        return outputTup
+
+    cursor.execute(f"select dish, quantity, cal from menudata where day='{day}' and meal='breakfast';")
+    breakfastDeets = formatMealDeets(cursor.fetchone())
+    print(breakfastDeets)
+    cursor.execute(f"select dish, quantity, cal from menudata where day='{day}' and meal='lunch';")
+    lunchDeets = formatMealDeets(cursor.fetchone())
+    print(lunchDeets)
+    cursor.execute(f"select dish, quantity, cal from menudata where day='{day}' and meal='snack';")
+    snackDeets = formatMealDeets(cursor.fetchone())
+    print(snackDeets)
+    cursor.execute(f"select dish, quantity, cal from menudata where day='{day}' and meal='dinner';")
+    dinnerDeets = formatMealDeets(cursor.fetchone())
+    print(dinnerDeets)
     ...
     mealDetails.config(state=NORMAL)
     mealDetails.delete(1.0,END)
     mealDetails.insert(END,"{:<25} {:<0}".format("","Welcome To CalCheck\n\n"))
     mealDetails.insert(END,"{:<25} {:<0} {:<0}".format("",f"{day}'s","Diet Plan\n"))
     mealDetails.insert(END,"=======================+=======================+======================\n")
-    mealDetails.insert(END,"                                Breakfast               \n")
+    mealDetails.insert(END,"                                Breakfast                             \n")
     mealDetails.insert(END,"=======================+=======================+======================\n")
     mealDetails.insert(END,"         Item                   Count                   Calories      \n")
     mealDetails.insert(END,"=======================+=======================+======================\n")
-    mealDetails.insert(END,"                       |                       |                      \n")
+    mealDetails.insert(END,f"{breakfastDeets[0]}|{breakfastDeets[1]}|{breakfastDeets[2]}")
     mealDetails.insert(END,"=======================+=======================+======================\n\n")
     
     mealDetails.insert(END,"=======================+=======================+======================\n")
-    mealDetails.insert(END,"                                Lunch                 \n")
+    mealDetails.insert(END,"                                Lunch                                 \n")
     mealDetails.insert(END,"=======================+=======================+======================\n")
     mealDetails.insert(END,"         Item                   Count                   Calories      \n")
     mealDetails.insert(END,"=======================+=======================+======================\n")
-    mealDetails.insert(END,"                       |                       |                      \n")
+    mealDetails.insert(END,f"{lunchDeets[0]}|{lunchDeets[1]}|{lunchDeets[2]}")
     mealDetails.insert(END,"=======================+=======================+======================\n\n")
 
     mealDetails.insert(END,"=======================+=======================+======================\n")
-    mealDetails.insert(END,"                                Snacks                \n")
+    mealDetails.insert(END,"                                Snacks                                \n")
     mealDetails.insert(END,"=======================+=======================+======================\n")
     mealDetails.insert(END,"         Item                   Count                   Calories      \n")
     mealDetails.insert(END,"=======================+=======================+======================\n")
-    mealDetails.insert(END,"                       |                       |                      \n")
+    mealDetails.insert(END,f"{snackDeets[0]}|{snackDeets[1]}|{snackDeets[2]}")
     mealDetails.insert(END,"=======================+=======================+======================\n\n")
 
     mealDetails.insert(END,"=======================+=======================+======================\n")
-    mealDetails.insert(END,"                                Dinner                \n")
+    mealDetails.insert(END,"                                Dinner                                \n")
     mealDetails.insert(END,"=======================+=======================+======================\n")
     mealDetails.insert(END,"         Item                   Count                   Calories      \n")
     mealDetails.insert(END,"=======================+=======================+======================\n")
-    mealDetails.insert(END,"                       |                       |                      \n")
-    mealDetails.insert(END,"=======================+=======================+======================\n")
+    mealDetails.insert(END,f"{dinnerDeets[0]}|{dinnerDeets[1]}|{dinnerDeets[2]}")
+    mealDetails.insert(END,"=======================+=======================+======================")
     mealDetails.config(state=DISABLED)
-
-
 ...
 def createHomePage(uname='JohnDoe'):
     global root
@@ -144,7 +191,7 @@ def createHomePage(uname='JohnDoe'):
     # Button(root, borderwidth=1, height=1,width=9,text="More",bg="teal",fg="white",command='toggle_password').grid(row=0,column=0,sticky= W+E+N+S)
     Label(root,width=9,height=1, text='',bg="orange").grid(row=0,column=0,sticky= W+E+N+S)
     Button(root, borderwidth=1, height=1,width=9,text="Logout",bg="teal",fg="white",command='toggle_password').grid(row=0,column=3,sticky= W+E+N+S)
-    Label(root,width=65,height=1, text=f"Welcome Back {uname}", bg="orange",fg="white").grid(row=0,column=1,sticky= W+E+N+S)
+    Label(root,width=65,height=1, text=f"Welcome Back {uname.title()}", bg="orange",fg="white").grid(row=0,column=1,sticky= W+E+N+S)
     Button(root, borderwidth=1, height=3,width=17,text="Exit",bg="orange",fg="white",command='').place(x=457,y=535)
     ...
     global mealDetails
