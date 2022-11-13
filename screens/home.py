@@ -74,6 +74,7 @@ def createWeekMenu(day="Not Set",monBg="teal",tueBg="teal",wedBg="teal",thursBg=
             dateNow_formatted += dateNow[i]
     # print(dateNow_formatted)
     print(day)
+    #TODO--> make logic for calorie and count
     if ((int(dateNow_formatted) > int(prevDate) and datetime.datetime.today().weekday() == 0) or prevDate == '00000000000000'):
         # making week menu for the user
         for meal_day in days:
