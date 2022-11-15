@@ -26,8 +26,10 @@ def verifyLogin():
                 messagebox.showerror('Error', 'Invalid credentials')
             else:
                 root.destroy()
-                createHomePage(uname.title())
                 print('SUCCESS: Log in')
+                with open("prevUserAuth.txt","w") as f:
+                    f.writelines([uname,"\n",password])
+                createHomePage(uname.title())
         except:
             messagebox.showerror('Error',"Username and Password\ndoesn't exist")
     else:
@@ -92,9 +94,9 @@ def register(callPersonalInfoScreen):
         print(query)
         cursor.execute(query)
         mydb.commit()
-        with open("weekMenu.txt","w") as file:
-            file.write('0000-00-00 00:00:00')
         root.destroy()
+        with open("prevUserAuth.txt","w") as f:
+            f.writelines([uname,"\n",password])
         createHomePage(uname=uname)
         return True
     except:
@@ -138,49 +140,55 @@ def personalInfoScreen():
 
 # login window
 def loginScreen():
-    global root
-    root = Tk()
-    root.resizable(False,False)
-    root.eval('tk::PlaceWindow . center')
-    root.title("Login")
-    root.geometry("300x250")
-    ...
-    Label(root,width="300", text="Please enter details below", bg="orange",fg="white").pack()
-    # labels for username and PWD
-    Label(root,text='Username').place(x=20,y=40)
-    Label(root,text='Password').place(x=20,y=80)
-    ...
-    def toggle_password():
-        if pwd.cget('show') == '':
-            pwd.config(show='*')
-            toggle_btn.config(image=closedEye)
+    with open("prevUserAuth.txt") as f:
+        authdetails = f.readlines()
+        if len(authdetails) == 2:
+            print("True")
+            createHomePage(uname=authdetails[0].strip("\n"))
         else:
-            pwd.config(show='')
-            toggle_btn.config(image=openEye)
+            global root
+            root = Tk()
+            root.resizable(False,False)
+            root.eval('tk::PlaceWindow . center')
+            root.title("Login")
+            root.geometry("300x250")
+            ...
+            Label(root,width="300", text="Please enter details below", bg="orange",fg="white").pack()
+            # labels for username and PWD
+            Label(root,text='Username').place(x=20,y=40)
+            Label(root,text='Password').place(x=20,y=80)
+            ...
+            def toggle_password():
+                if pwd.cget('show') == '':
+                    pwd.config(show='*')
+                    toggle_btn.config(image=closedEye)
+                else:
+                    pwd.config(show='')
+                    toggle_btn.config(image=openEye)
 
-    closedEye = PhotoImage(file = r"assets/closedEYE.png")
-    openEye = PhotoImage(file = r"assets/openEYE.png")
-    toggle_btn = Button(root, borderwidth=1, height=15,width=15,image=closedEye,command=toggle_password)
-    toggle_btn.place(x=220,y=82)
-    ...
-    # input fields
-    global name
-    name = Entry(root)
-    name.place(x=90,y=42)
-    name.focus()
-    #customised input field for PWD
-    global pwd
-    pwd = Entry(root)
-    pwd.config(show='*')
-    pwd.place(x=90,y=82)
-    ...
-    def goToReg():
-        root.destroy()
-        regScreen()
-    Button(root, text="Submit", width=10, height=1, bg="orange",command=verifyLogin).place(x=105,y=130)
-    Button(root, text="Register", width=10, height=1, bg="orange",command=goToReg).place(x=105,y=170)
-    ...
-    root.mainloop()
+            closedEye = PhotoImage(file = r"assets/closedEYE.png")
+            openEye = PhotoImage(file = r"assets/openEYE.png")
+            toggle_btn = Button(root, borderwidth=1, height=15,width=15,image=closedEye,command=toggle_password)
+            toggle_btn.place(x=220,y=82)
+            ...
+            # input fields
+            global name
+            name = Entry(root)
+            name.place(x=90,y=42)
+            name.focus()
+            #customised input field for PWD
+            global pwd
+            pwd = Entry(root)
+            pwd.config(show='*')
+            pwd.place(x=90,y=82)
+            ...
+            def goToReg():
+                root.destroy()
+                regScreen()
+            Button(root, text="Submit", width=10, height=1, bg="orange",command=verifyLogin).place(x=105,y=130)
+            Button(root, text="Register", width=10, height=1, bg="orange",command=goToReg).place(x=105,y=170)
+            ...
+            root.mainloop()
 
 # registration window
 def regScreen():

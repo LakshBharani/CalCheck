@@ -14,11 +14,15 @@ try:
 except:
     cursor.execute("use diettracker")
 try:
-    cursor.execute("create table menudata (username varchar(255), date varchar(255), day varchar(255), meal varchar(255), dish varchar(255), cal varchar(255), unit varchar(255), mealtype varchar(255), altmealtype varchar(255), preference varchar(255), quantity varchar(255))")
+    cursor.execute("create table menudata (Username varchar(255), Date varchar(255), Day varchar(255), Meal varchar(255), \
+            Dish varchar(255), Cal varchar(255), Unit varchar(255), Mealtype varchar(255), Altmealtype varchar(255), \
+            Preference varchar(255), Quantity varchar(255))")
 except:
     print("Menudata exists")
 try:
-    cursor.execute("create table userdata(username varchar(255) primary key not null, password varchar(255) not null, phoneNo varchar(255) not null, gender varchar(1) not null, height integer not null, weight integer not null, age integer not null)")
+    cursor.execute("create table userdata(Username varchar(255) primary key not null, Password varchar(255) not null, \
+            PhoneNo varchar(255) not null, Gender varchar(1) not null, Height integer not null, Weight integer not null, \
+            Age integer not null)")
 except:
     print("Userdata exists")
 

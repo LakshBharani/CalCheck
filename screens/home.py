@@ -1,4 +1,5 @@
 from tkinter import *
+from tkinter import messagebox
 import datetime
 import csv
 import random
@@ -13,6 +14,45 @@ mydb = mysql.connector.connect(
 )
 cursor = mydb.cursor(buffered=True)
 
+def quitHome(leavingMethod):
+    if leavingMethod == "logout":
+        answer = messagebox.askokcancel("Logout", "You will be required\nto login again.",icon="warning")
+        if answer == True:
+            root.destroy()
+            with open("prevUserAuth.txt","w") as f:
+                f.write('')
+            from auth.auth_handler import loginScreen
+            loginScreen()
+    elif leavingMethod == "exit":
+        answer = messagebox.askokcancel("Exit", "Are you sure you\nwant to exit?")
+        if answer == True:
+            root.destroy()
+            print("...Terminated")
+
+def refreshMenu():
+    answer = messagebox.askokcancel("Reset Menu", "Your current menu will be\ndeleted and a new one will\nbe made.",icon="warning")
+    if answer == True:
+        cursor.execute(f"select distinct date from menudata where username='{username}'")
+        dateToBeRemoved = cursor.fetchall()[-1][0]
+        cursor.execute(f"delete from menudata where date='{dateToBeRemoved}'")
+        # creates new menu and sets day to current day
+        if datetime.datetime.today().weekday() == 0:
+            createWeekMenu(monBg="red",day="Monday")
+        elif datetime.datetime.today().weekday() == 1:
+            createWeekMenu(tueBg="red",day="Tuesday")
+        elif datetime.datetime.today().weekday() == 2:
+            createWeekMenu(wedBg="red",day="Wednesday")
+        elif datetime.datetime.today().weekday() == 3:
+            createWeekMenu(thursBg="red",day="Thursday")
+        elif datetime.datetime.today().weekday() == 4:
+            createWeekMenu(friBg="red",day="Friday")
+        elif datetime.datetime.today().weekday() == 5:
+            createWeekMenu(satBg="red",day="Saturday")
+        elif datetime.datetime.today().weekday() == 6:
+            createWeekMenu(sunBg="red",day="Sunday")
+        print(f"Previous menu changed!")
+
+            
 def getCSV():
     global dbData
     with open("Food Data.csv", "r") as dbFile:
@@ -24,7 +64,7 @@ def getCSV():
                 i+=1
             else:
                 dbData.update({line[0]:{"cal":line[1],"unit":line[2],"mealType":line[3],
-                                "altMealType":line[4],"v/n":line[5],"dishType":line[6]}})
+                                "altMealType":line[4],"v/n":line[5]}})
 
 def createWeekMenu(day="Not Set",monBg="teal",tueBg="teal",wedBg="teal",thursBg="teal",friBg="teal",satBg="teal",sunBg="teal"):
     global mon,tue,wed,thurs,fri,sat,sun
@@ -55,7 +95,7 @@ def createWeekMenu(day="Not Set",monBg="teal",tueBg="teal",wedBg="teal",thursBg=
     days = ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday']
     preference = "v"
     # get prev date
-    cursor.execute(f"select date from menudata where username='{username}'")
+    cursor.execute(f"select distinct date from menudata where username='{username}'")
     allDates = cursor.fetchall()
     prevDate = '00000000000000'
     for date in allDates:
@@ -65,14 +105,14 @@ def createWeekMenu(day="Not Set",monBg="teal",tueBg="teal",wedBg="teal",thursBg=
                 tempPrevDate += date[0][i]
         if int(prevDate) <= int(tempPrevDate):
             prevDate = tempPrevDate
-    # print(prevDate)
+
     # get current date
     dateNow = str(datetime.datetime.today())[:19]
     dateNow_formatted = ''
     for i in range(10):
         if dateNow[i] != '-' and dateNow[i] != ' ' and dateNow[i] != ":":
             dateNow_formatted += dateNow[i]
-    # print(dateNow_formatted)
+
     print(day)
     #TODO--> make logic for calorie and count
     if ((int(dateNow_formatted) > int(prevDate) and datetime.datetime.today().weekday() == 0) or prevDate == '00000000000000'):
@@ -87,16 +127,24 @@ def createWeekMenu(day="Not Set",monBg="teal",tueBg="teal",wedBg="teal",thursBg=
                         dbData[foodItem]["qty"] = calories//int(dbData[foodItem]["cal"])
                         meal_menu_filtered.update({foodItem:dbData[foodItem]})
                 for key in meal_menu_filtered: key_li.append(key)
+                allFoodItems_inMenu = []
+                for i in meal_menu_final:
+                    for j in meal_menu_final[i]:
+                        for key in list(meal_menu_final[i][j].keys()):
+                            allFoodItems_inMenu.append(key)
+                print(allFoodItems_inMenu)
+
+                print("KEY LI:",key_li)
                 rand_key = random.choice(key_li)
+                print(rand_key)
+                while rand_key in allFoodItems_inMenu:
+                    rand_key = random.choice(key_li)
+                    print(rand_key)
                 dayMenu.update({mealType:{rand_key : meal_menu_filtered[rand_key]}})
                 meal_menu_final.update({meal_day:dayMenu})
-        ...
-        if meal_menu_final != {}:
-            with open("weekMenu.txt","w") as weekMenuFile:
-                weekMenuFile.write(str(datetime.datetime.today())+"\n")
-                weekMenuFile.write(str(meal_menu_final))
+                     
         print(meal_menu_final)
-        
+        ...
         for dayKey in meal_menu_final:
             print(dayKey)
             for mealKey in list(meal_menu_final[dayKey].keys()):
@@ -190,10 +238,10 @@ def createHomePage(uname='JohnDoe'):
     root.geometry("{}x{}+{}+{}".format(window_width, window_height, x_cordinate, y_cordinate))
     ...
     # Button(root, borderwidth=1, height=1,width=9,text="More",bg="teal",fg="white",command='toggle_password').grid(row=0,column=0,sticky= W+E+N+S)
-    Label(root,width=9,height=1, text='',bg="orange").grid(row=0,column=0,sticky= W+E+N+S)
-    Button(root, borderwidth=1, height=1,width=9,text="Logout",bg="teal",fg="white",command='toggle_password').grid(row=0,column=3,sticky= W+E+N+S)
+    Button(root, borderwidth=1, height=1,width=9,text="Reset Menu",bg="teal",fg="white",command=refreshMenu).grid(row=0,column=0,sticky= W+E+N+S)
     Label(root,width=65,height=1, text=f"Welcome Back {uname.title()}", bg="orange",fg="white").grid(row=0,column=1,sticky= W+E+N+S)
-    Button(root, borderwidth=1, height=3,width=17,text="Exit",bg="orange",fg="white",command='').place(x=457,y=535)
+    Button(root, borderwidth=1, height=1,width=9,text="Logout",bg="teal",fg="white",command=lambda: quitHome("logout")).grid(row=0,column=3,sticky= W+E+N+S)
+    Button(root, borderwidth=1, height=3,width=17,text="Exit",bg="orange",fg="white",command=lambda: quitHome("exit")).place(x=457,y=535)
     ...
     global mealDetails
     mealDetails = Text(root, height = 30,width = 70,bg = "white",relief=RIDGE,borderwidth=2)
