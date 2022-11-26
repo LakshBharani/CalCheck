@@ -16,6 +16,8 @@ mydb = mysql.connector.connect(
 )
 cursor = mydb.cursor(buffered=True)
 
+# function executed when user chooses to leave app through 1. logout or 2. Exit
+
 
 def quitHome(leavingMethod):
     if leavingMethod == "logout":
@@ -33,6 +35,8 @@ def quitHome(leavingMethod):
         if answer == True:
             root.destroy()
             print("...Terminated")
+
+# if user is unhappy with his current menu, it will recreate the entire weeks menu with same calorie count for all 7 days
 
 
 def refreshMenu():
@@ -60,6 +64,8 @@ def refreshMenu():
             createWeekMenu(sunBg="red", day="Sunday")
         print(f"Previous menu changed!")
 
+# get all data from the food database (csv file)
+
 
 def getCSV():
     global dbData
@@ -74,6 +80,8 @@ def getCSV():
                 dbData.update({line[0]: {"cal": line[1], "unit": line[2], "mealType": line[3],
                                          "altMealType": line[4], "v/n": line[5]}})
 
+# function to create a menu for all days and change the color of the buttons when clicked
+
 
 def createWeekMenu(day="Not Set", monBg="teal", tueBg="teal", wedBg="teal", thursBg="teal", friBg="teal", satBg="teal", sunBg="teal"):
     global mon, tue, wed, thurs, fri, sat, sun
@@ -87,6 +95,7 @@ def createWeekMenu(day="Not Set", monBg="teal", tueBg="teal", wedBg="teal", thur
     sun.config(bg=sunBg)
     ...
     getCSV()
+    # get user info from the sql database to calculate daily calories based on height, weight, age and gender
     meal_menu_final = {}
     cursor.execute(
         f"select weight from userdata where username = '{username}'")
@@ -107,10 +116,10 @@ def createWeekMenu(day="Not Set", monBg="teal", tueBg="teal", wedBg="teal", thur
     days = ['Monday', 'Tuesday', 'Wednesday',
             'Thursday', 'Friday', 'Saturday', 'Sunday']
     preference = "v"
-    # get prev date
+    # get previous date
     cursor.execute(
         f"select distinct date from menudata where username='{username}'")
-    allDates = cursor.fetchall()
+    allDates = cursor.fetchall()  # all the dates in the database for the current user
     prevDate = '00000000000000'
     for date in allDates:
         tempPrevDate = ''
@@ -128,9 +137,9 @@ def createWeekMenu(day="Not Set", monBg="teal", tueBg="teal", wedBg="teal", thur
             dateNow_formatted += dateNow[i]
 
     print(day)
-    # TODO--> make logic for calorie and count
     if ((int(dateNow_formatted) > int(prevDate) and datetime.datetime.today().weekday() == 0) or prevDate == '00000000000000'):
         # making week menu for the user
+        # calorie ratio per meal is set here
         bfastcal = calories*0.30
         lunchCal = calories*0.35
         snackCal = calories*0.10
@@ -299,6 +308,8 @@ def createWeekMenu(day="Not Set", monBg="teal", tueBg="teal", wedBg="teal", thur
 
 ...
 
+# function to create the layout for the home page
+
 
 def createHomePage(uname='JohnDoe'):
     global root
@@ -374,6 +385,3 @@ def createHomePage(uname='JohnDoe'):
 
     ...
     root.mainloop()
-
-# TODO -> Remove after design done
-# createHomePage()
