@@ -1,10 +1,13 @@
 # run code from here -->
+import auth.auth_handler as auth_handler
 import mysql.connector
 # mysql database connector
 mydb = mysql.connector.connect(
-  host="localhost",
-  user="laksh",
-  password="root",
+    host="localhost",
+    user="laksh",
+    password="root",
+    #   user="root",
+    #   password="sql123",
 )
 cursor = mydb.cursor(buffered=True)
 # make sure data base and tables are created
@@ -27,5 +30,4 @@ except:
     print("Userdata exists")
 
 # run after checking if table and db exists
-import auth.auth_handler as auth_handler
 auth_handler.loginScreen()
