@@ -5,14 +5,13 @@ from screens.home import createHomePage
 
 # mysql database connector
 mydb = mysql.connector.connect(
-    host="localhost",
-    user="laksh",
-    password="root",
-    #   user="root",
-    #   password="sql123",
+    user="root",
+    password="sql123",
 )
 cursor = mydb.cursor(buffered=True)
 # verify login fields
+
+
 def verifyLogin():
     global uname, password
     uname = name.get()
@@ -40,6 +39,8 @@ def verifyLogin():
         messagebox.showerror('Error', 'Incorrect Credentials')
 
 # verify registration fields
+
+
 def verifyReg():
     global uname, password, phone
     uname = name.get()
@@ -68,6 +69,8 @@ def verifyReg():
         personalInfoScreen()
 
 # verify fields of personal info screen
+
+
 def verifyPersonalInfo():
     global gender, height, weight, age
     gender = genderEntry.get().upper()
@@ -114,12 +117,14 @@ def register(callPersonalInfoScreen):
 
 ...
 # personal info screen
+
+
 def personalInfoScreen():
     global root
     root = Tk()
     root.resizable(False, False)
     root.eval('tk::PlaceWindow . center')
-    root.title("Login")
+    root.title("Personal Information")
     root.geometry("300x250")
     ...
     Label(root, width="300", text="Please enter details below",
@@ -152,6 +157,8 @@ def personalInfoScreen():
            command=verifyPersonalInfo).place(x=105, y=200)
 
 # make layout for login screen
+
+
 def loginScreen():
     with open("prevUserAuth.txt") as f:
         authdetails = f.readlines()
@@ -210,6 +217,8 @@ def loginScreen():
             root.mainloop()
 
 # make layout for registration window
+
+
 def regScreen():
     global root
     root = Tk()
