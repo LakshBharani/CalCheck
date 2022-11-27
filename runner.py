@@ -8,7 +8,7 @@ mydb = mysql.connector.connect(
     password="sql123",
 )
 cursor = mydb.cursor(buffered=True)
-# make sure data base and tables are created
+# make sure database and tables are created
 try:
     cursor.execute("create database diettracker")
     cursor.execute("use diettracker")
