@@ -8,9 +8,8 @@ import mysql.connector
 # mysql database connector
 mydb = mysql.connector.connect(
     host="localhost",
-    user="root",
-    password="sql123",
-    database="diettracker"
+    user="laksh",
+    password="root",
 )
 cursor = mydb.cursor(buffered=True)
 
@@ -23,8 +22,6 @@ def quitHome(leavingMethod):
             "Logout", "You will be required\nto login again.", icon="warning")
         if answer == True:
             root.destroy()
-            with open("prevUserAuth.txt", "w") as f:
-                f.write('')
             from auth.auth_handler import loginScreen
             loginScreen()
     elif leavingMethod == "exit":
@@ -60,7 +57,6 @@ def refreshMenu():
             createWeekMenu(satBg="red", day="Saturday")
         elif datetime.datetime.today().weekday() == 6:
             createWeekMenu(sunBg="red", day="Sunday")
-        print(f"Previous menu changed!")
 
 # get all data from the food database (csv file)
 
@@ -134,7 +130,6 @@ def createWeekMenu(day="Not Set", monBg="teal", tueBg="teal", wedBg="teal", thur
         if dateNow[i] != '-' and dateNow[i] != ' ' and dateNow[i] != ":":
             dateNow_formatted += dateNow[i]
 
-    print(day)
     if ((int(dateNow_formatted) > int(prevDate) and datetime.datetime.today().weekday() == 0) or prevDate == '00000000000000'):
         # making week menu for the user
         # calorie ratio per meal is set here
@@ -170,27 +165,19 @@ def createWeekMenu(day="Not Set", monBg="teal", tueBg="teal", wedBg="teal", thur
                             allFoodItems_inMenu.append(key)
 
                 rand_key = random.choice(key_li)
-                print(rand_key)
                 while rand_key in allFoodItems_inMenu:
                     rand_key = random.choice(key_li)
-                    print(rand_key)
                 dayMenu.update(
                     {mealType: {rand_key: meal_menu_filtered[rand_key]}})
                 meal_menu_final.update({meal_day: dayMenu})
-        print(meal_menu_final)
         ...
         for dayKey in meal_menu_final:
-            print(dayKey)
             for mealKey in list(meal_menu_final[dayKey].keys()):
-                print(mealKey)
                 foodItemKey = meal_menu_final[dayKey][mealKey][list(
                     meal_menu_final[dayKey][mealKey].keys())[0]]
-                print(foodItemKey)
                 query = f"insert into menudata values('{username}','{dateNow}','{dayKey}','{mealKey}','{list(meal_menu_final[dayKey][mealKey].keys())[0]}','{foodItemKey['cal']}','{foodItemKey['unit']}','{foodItemKey['mealType']}','{foodItemKey['altMealType']}','{foodItemKey['v/n']}','{foodItemKey['qty']}');"
-                print(query)
                 cursor.execute(query)
                 mydb.commit()
-                print("Added to database!")
     ...
 
     def formatMealDeets(inputTup):
@@ -224,19 +211,15 @@ def createWeekMenu(day="Not Set", monBg="teal", tueBg="teal", wedBg="teal", thur
     cursor.execute(
         f"select dish, quantity, unit, cal from menudata where day='{day}' and meal='breakfast';")
     breakfastDeets = formatMealDeets(cursor.fetchone())
-    print(breakfastDeets)
     cursor.execute(
         f"select dish, quantity, unit, cal from menudata where day='{day}' and meal='lunch';")
     lunchDeets = formatMealDeets(cursor.fetchone())
-    print(lunchDeets)
     cursor.execute(
         f"select dish, quantity, unit, cal from menudata where day='{day}' and meal='snack';")
     snackDeets = formatMealDeets(cursor.fetchone())
-    print(snackDeets)
     cursor.execute(
         f"select dish, quantity, unit, cal from menudata where day='{day}' and meal='dinner';")
     dinnerDeets = formatMealDeets(cursor.fetchone())
-    print(dinnerDeets)
     ...
     mealDetails.config(state=NORMAL)
     mealDetails.delete(1.0, END)
@@ -310,6 +293,7 @@ def createWeekMenu(day="Not Set", monBg="teal", tueBg="teal", wedBg="teal", thur
 
 
 def createHomePage(uname='JohnDoe'):
+    cursor.execute("use diettracker")
     global root
     global username
     username = uname
@@ -328,7 +312,7 @@ def createHomePage(uname='JohnDoe'):
     root.geometry("{}x{}+{}+{}".format(window_width,
                   window_height, x_cordinate, y_cordinate))
     ...
-    # Button(root, borderwidth=1, height=1,width=9,text="More",bg="teal",fg="white",command='toggle_password').grid(row=0,column=0,sticky= W+E+N+S)
+
     Button(root, borderwidth=1, height=1, width=9, text="Reset Menu", bg="teal",
            fg="white", command=refreshMenu).grid(row=0, column=0, sticky=W+E+N+S)
     Label(root, width=65, height=1, text=f"Welcome Back {uname.title()}", bg="orange", fg="white").grid(
@@ -380,6 +364,6 @@ def createHomePage(uname='JohnDoe'):
         createWeekMenu(satBg="red", day="Saturday")
     elif datetime.datetime.today().weekday() == 6:
         createWeekMenu(sunBg="red", day="Sunday")
-
     ...
     root.mainloop()
+

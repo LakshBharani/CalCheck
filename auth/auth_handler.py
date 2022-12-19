@@ -5,8 +5,8 @@ from screens.home import createHomePage
 
 # mysql database connector
 mydb = mysql.connector.connect(
-    user="root",
-    password="sql123",
+    user="laksh",
+    password="root",
 )
 cursor = mydb.cursor(buffered=True)
 # verify login fields
@@ -28,9 +28,6 @@ def verifyLogin():
                 messagebox.showerror('Error', 'Invalid credentials')
             else:
                 root.destroy()
-                print('SUCCESS: Log in')
-                with open("prevUserAuth.txt", "w") as f:
-                    f.writelines([uname, "\n", password])
                 createHomePage(uname.title())
         except:
             messagebox.showerror(
@@ -49,9 +46,8 @@ def verifyReg():
     cursor.execute('use DietTracker')
     try:
         cursor.execute('create table userdata(username varchar(255) primary key not null, password varchar(255) not null, phoneNo varchar(255) not null, gender varchar(1), height varchar(255), weight varchar(255), age varchar(255))')
-        print('SUCCESS: Table Created')
     except:
-        print('SUCCESS: Table exists')
+        None
 
     cursor.execute(f"select * from userdata where username='{uname}'")
 
@@ -103,13 +99,10 @@ def register(callPersonalInfoScreen):
         if callPersonalInfoScreen:
             personalInfoScreen()
         query = f"insert into userdata values('{uname}','{password}','{phone}','{gender}','{height}','{weight}','{age}');"
-        print(query)
         cursor.execute(query)
         mydb.commit()
         root.destroy()
-        with open("prevUserAuth.txt", "w") as f:
-            f.writelines([uname, "\n", password])
-        createHomePage(uname=uname)
+        loginScreen()
         return True
     except:
         return False
@@ -160,61 +153,57 @@ def personalInfoScreen():
 
 
 def loginScreen():
-    with open("prevUserAuth.txt") as f:
-        authdetails = f.readlines()
-        if len(authdetails) == 2:
-            print("True")
-            createHomePage(uname=authdetails[0].strip("\n"))
-        else:
-            global root
-            root = Tk()
-            root.resizable(False, False)
-            root.eval('tk::PlaceWindow . center')
-            root.title("Login")
-            root.geometry("300x250")
-            ...
-            Label(root, width="300", text="Please enter details below",
-                  bg="orange", fg="white").pack()
-            # labels for username and PWD
-            Label(root, text='Username').place(x=20, y=40)
-            Label(root, text='Password').place(x=20, y=80)
-            ...
+    cursor.execute("show databases like 'diettracker'")
+    if cursor.fetchall()[0] != 'diettracker':
+        global root
+        root = Tk()
+        root.resizable(False, False)
+        root.eval('tk::PlaceWindow . center')
+        root.title("Login")
+        root.geometry("300x250")
+        ...
+        Label(root, width="300", text="Please enter details below",
+              bg="orange", fg="white").pack()
+        # labels for username and PWD
+        Label(root, text='Username').place(x=20, y=40)
+        Label(root, text='Password').place(x=20, y=80)
+        ...
 
-            def toggle_password():
-                if pwd.cget('show') == '':
-                    pwd.config(show='*')
-                    toggle_btn.config(image=closedEye)
-                else:
-                    pwd.config(show='')
-                    toggle_btn.config(image=openEye)
+        def toggle_password():
+            if pwd.cget('show') == '':
+                pwd.config(show='*')
+                toggle_btn.config(image=closedEye)
+            else:
+                pwd.config(show='')
+                toggle_btn.config(image=openEye)
 
-            closedEye = PhotoImage(file=r"assets/closedEYE.png")
-            openEye = PhotoImage(file=r"assets/openEYE.png")
-            toggle_btn = Button(root, borderwidth=1, height=15,
-                                width=15, image=closedEye, command=toggle_password)
-            toggle_btn.place(x=220, y=82)
-            ...
-            # input fields
-            global name
-            name = Entry(root)
-            name.place(x=90, y=42)
-            name.focus()
-            # customised input field for PWD
-            global pwd
-            pwd = Entry(root)
-            pwd.config(show='*')
-            pwd.place(x=90, y=82)
-            ...
+        closedEye = PhotoImage(file=r"assets/closedEYE.png")
+        openEye = PhotoImage(file=r"assets/openEYE.png")
+        toggle_btn = Button(root, borderwidth=1, height=15,
+                            width=15, image=closedEye, command=toggle_password)
+        toggle_btn.place(x=220, y=82)
+        ...
+        # input fields
+        global name
+        name = Entry(root)
+        name.place(x=90, y=42)
+        name.focus()
+        # customised input field for PWD
+        global pwd
+        pwd = Entry(root)
+        pwd.config(show='*')
+        pwd.place(x=90, y=82)
+        ...
 
-            def goToReg():
-                root.destroy()
-                regScreen()
-            Button(root, text="Submit", width=10, height=1,
-                   bg="orange", command=verifyLogin).place(x=105, y=130)
-            Button(root, text="Register", width=10, height=1,
-                   bg="orange", command=goToReg).place(x=105, y=170)
-            ...
-            root.mainloop()
+        def goToReg():
+            root.destroy()
+            regScreen()
+        Button(root, text="Submit", width=10, height=1,
+               bg="orange", command=verifyLogin).place(x=105, y=130)
+        Button(root, text="Register", width=10, height=1,
+               bg="orange", command=goToReg).place(x=105, y=170)
+        ...
+        root.mainloop()
 
 # make layout for registration window
 
