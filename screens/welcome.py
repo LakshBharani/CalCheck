@@ -1,6 +1,4 @@
 from tkinter import *
-from tkinter import messagebox
-from PIL import ImageTk, Image
 import auth.auth_handler as auth_handler
 
 
@@ -22,14 +20,10 @@ def createWelcomePage():
     root.geometry("{}x{}+{}+{}".format(window_width,
                   window_height, x_cordinate, y_cordinate))
     ...
-    Label(root, text="Welcome To", fg="green",
-          font=("", 30), background="white").place(x=202, y=37)
-    image = Image.open("assets/logo.jpg")
-    logo_resized = image.resize((120, 120))
-    logo = ImageTk.PhotoImage(logo_resized)
+    Label(root, text="Welcome To", fg="orange",
+          font=("", 40), background="white").place(x=30, y=37)
     Label(root, text="CalCheck", fg="green",
-          font=("", 30), background="white").place(x=225, y=230)
-    Label(root, image=logo, borderwidth=0).place(x=250, y=97)
+          font=("", 75), background="white").place(x=80, y=130)
     Label(root, text="Tracking calories and macro-nutrients helps in understanding the eating patterns and habits of an individual, making it easier to monitor diet behaviors. It is also an incredibly helpful way to keep track of your fitness and nutrition goals to achieve your intended physique.\n\nWe at CalCheck help you keep track of your daily meals without compromising on your calorie requirement.",
           font=("", 15), wraplengt=540, background="white").place(x=30, y=300)
     ...
