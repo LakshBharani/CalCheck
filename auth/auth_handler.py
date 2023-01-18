@@ -5,8 +5,8 @@ from screens.home import createHomePage
 
 # mysql database connector
 mydb = mysql.connector.connect(
-    user="laksh",
-    password="root",
+    user="root",
+    password="sql123",
 )
 cursor = mydb.cursor(buffered=True)
 # verify login fields
